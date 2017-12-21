@@ -1,0 +1,180 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fmodern\fcharset0 CourierNewPS-BoldItalicMT;\f2\fmodern\fcharset0 CourierNewPS-BoldMT;
+\f3\fnil\fcharset0 Calibri;}
+{\colortbl;\red255\green255\blue255;\red42\green0\blue255;\red127\green0\blue85;\red63\green127\blue89;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab708
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f0\fs14 \cf0 \
+constellation.registerMessageCallback(\cf2 "SetColor"\cf0 ,\
+    MessageCallbackDescriptor().setDescription(\cf2 "Sets the color of the LED strip"\cf0 ).addParameter(\cf2 "color"\cf0 , \cf2 "Color"\cf0 , \cf2 "The RGB color"\cf0 ),\
+    [](JsonObject& json) 
+\f1\i\b \cf1 \{
+\f0\i0\b0 \cf0 \
+      uint32_t color = Color(json[\cf2 "Data"\cf0 ][0][\cf2 "R"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >(), json[\cf2 "Data"\cf0 ][0][\cf2 "G"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >(), json[\cf2 "Data"\cf0 ][0][\cf2 "B"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >());\
+      constellation.writeInfo(\cf2 "Setting color to %d"\cf0 , color);\
+      
+\f2\b \cf3 for
+\f0\b0 \cf0  (
+\f2\b \cf3 int
+\f0\b0 \cf0  i=0; i < strip.numPixels(); i++) 
+\f1\i\b \cf1 \{
+\f0\i0\b0 \cf0 \
+        strip.setPixelColor(i, color);\
+      
+\f1\i\b \cf1 \}
+\f0\i0\b0 \cf0 \
+      strip.show();\
+  
+\f1\i\b \cf1 \}
+\f0\i0\b0 \cf0 );\
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+
+\f3\fs22 \cf0 \
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f0\fs16 \cf0 \
+\
+constellation.registerMessageCallback(\cf2 "Blink"\cf0 ,\
+  MessageCallbackDescriptor().setDescription(\cf2 "Blinks the LEDs"\cf0 ).addParameter(\cf2 "color"\cf0 , \cf2 "Color"\cf0 , \cf2 "The RGB color"\cf0 ).addParameter<
+\f2\b \cf3 short
+\f0\b0 \cf0 >(\cf2 "wait"\cf0 , \cf2 "The delay of blink"\cf0 ).addParameter<
+\f2\b \cf3 short
+\f0\b0 \cf0 >(\cf2 "repeat"\cf0 , \cf2 "Number of repeats for Blink"\cf0 ),\
+  [](JsonObject& json) 
+\f1\i\b \cf1 \{
+\f0\i0\b0 \cf0       \
+    
+\f2\b \cf3 static
+\f0\b0 \cf0  uint32_t color;\
+    
+\f2\b \cf3 static
+\f0\b0 \cf0  
+\f2\b \cf3 short
+\f0\b0 \cf0  wait;\
+    color = Color(json[\cf2 "Data"\cf0 ][0][\cf2 "R"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >(), json[\cf2 "Data"\cf0 ][0][\cf2 "G"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >(), json[\cf2 "Data"\cf0 ][0][\cf2 "B"\cf0 ].as<
+\f2\b \cf3 int
+\f0\b0 \cf0 >());\
+    wait = json[\cf2 "Data"\cf0 ][1].as<
+\f2\b \cf3 short
+\f0\b0 \cf0 >();\
+    
+\f2\b \cf3 short
+\f0\b0 \cf0  repeat = json[\cf2 "Data"\cf0 ][2].as<
+\f2\b \cf3 short
+\f0\b0 \cf0 >();\
+    constellation.writeInfo(\cf2 "Blink %d time(s) for %dms"\cf0 , repeat, wait);\
+    
+\f2\b \cf3 for
+\f0\b0 \cf0  (
+\f2\b \cf3 int
+\f0\b0 \cf0  j = 0; j <= repeat * 2; j++) 
+\f1\i\b \cf1 \{
+\f0\i0\b0 \cf0       \
+      
+\f2\b \cf3 for
+\f0\b0 \cf0  (
+\f2\b \cf3 int
+\f0\b0 \cf0  i=0; i < strip.numPixels(); i++) 
+\f1\i\b \cf1 \{
+\f0\i0\b0 \cf0     \
+        strip.setPixelColor(i, j % 2 == 0 ? color : 0);    \
+      
+\f1\i\b \cf1 \}
+\f0\i0\b0 \cf0     \
+      strip.show();     \
+      delay(wait);    \
+    
+\f1\i\b \cf1 \}
+\f0\i0\b0 \cf0     \
+    \cf4 // Restore current color    \cf0 \
+    showCurrentColor();\
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f1\i\b \cf1 \}
+\f0\i0\b0 \cf0 );\
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+
+\f3\fs22 \cf0 \
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f0\fs20 \cf0 \
+constellation.server.sendMessage(\{ Scope: \cf2 'Package'\cf0 , Args: [\cf2 'LedStrip'\cf0 ] \}, \cf2 'SetColor'\cf0 , [ \{ \cf2 "R"\cf0 :0, \cf2 "G"\cf0 :0, \cf2 "B"\cf0 :255 \}, 0, 0, 30 ]);\
+constellation.server.sendMessage(\{ Scope: \cf2 'Package'\cf0 , Args: [\cf2 'LedStrip'\cf0 ] \}, \cf2 'SetColor'\cf0 , [ \{ \cf2 "R"\cf0 :255, \cf2 "G"\cf0 :255, \cf2 "B"\cf0 :255 \}, 0, 31, 30 ]);\
+constellation.server.sendMessage(\{ Scope: \cf2 'Package'\cf0 , Args: [\cf2 'LedStrip'\cf0 ] \}, \cf2 'SetColor'\cf0 , [ \{ \cf2 "R"\cf0 :255, \cf2 "G"\cf0 :0, \cf2 "B"\cf0 :0 \}, 0, 61, 30 ]);\
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\fs16 \cf3 \
+<
+\f2\b div
+\f0\b0 \cf0  class=\cf2 "switch"\cf3 >\cf0 \
+  \cf3 <
+\f2\b input
+\f0\b0 \cf0  ng-click=\cf2 "SetLedStrip(255, 180, 20)"\cf0  ng-checked=\cf2 "LedStripState == true"\cf0  type=\cf2 "radio"\cf0  class=\cf2 "switch-input"\cf0  id=\cf2 "switchLedStripOn"\cf0  \cf3 >\cf0 \
+  \cf3 <
+\f2\b label
+\f0\b0 \cf0  for=\cf2 "switchLedStripOn"\cf0  class=\cf2 "switch-label switch-label-off"\cf3 >\cf0 Ouvert\cf3 </
+\f2\b label
+\f0\b0 >\cf0 					\
+  \cf3 <
+\f2\b input
+\f0\b0 \cf0  ng-click=\cf2 "SetLedStrip(0, 0, 0)"\cf0  ng-checked=\cf2 "LedStripState == false"\cf0  type=\cf2 "radio"\cf0  class=\cf2 "switch-input"\cf0  id=\cf2 "switchLedStripOff"\cf3 >\cf0 \
+  \cf3 <
+\f2\b label
+\f0\b0 \cf0  for=\cf2 "switchLedStripOff"\cf0  class=\cf2 "switch-label switch-label-on"\cf3 >\cf0 Ferm\'e9\cf3 </
+\f2\b label
+\f0\b0 >\cf0 					\
+\cf3 </
+\f2\b div
+\f0\b0 >\cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+
+\f3\fs22 \cf0 \
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f0\fs20 \cf0 \
+[MessageCallback]\
+\pard\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\pardeftab708\ri-52
+
+\f2\b \cf3 public
+\f0\b0 \cf0  
+\f2\b \cf3 void
+\f0\b0 \cf0  PushButton()\
+\{\
+    PackageHost.WriteInfo(\cf2 "On sonne \'e0 la porte !"\cf0 );\
+    \cf4 // Envoie de l'image courant de la camera sur le smartphone\cf0     PackageHost.CreateMessageProxy(\cf2 "PushBullet"\cf0 ).PushFile(cameraRue.StreamUri, \cf2 "On sonne !"\cf0 , PushTargetType.Device, 
+\f2\b \cf3 null
+\f0\b0 \cf0 );\
+    \cf4 // Si l'alarme n'est pas arm\'e9e\cf0 \
+    
+\f2\b \cf3 if
+\f0\b0 \cf0  (!
+\f2\b \cf3 this
+\f0\b0 \cf0 .IsArmed)\
+    \{\
+        \cf4 // Faire clignoter les lampes Hue du salon\cf0 \
+        PackageHost.CreateMessageProxy(\cf2 "Hue"\cf0 ).ShowAlert(1, 0, 255, 0, 2000);\
+        \cf4 // Faire clignoter la bande de LED de la cuisine\cf0 \
+        PackageHost.CreateMessageProxy(\cf2 "LedStrip"\cf0 ).Blink(
+\f2\b \cf3 new
+\f0\b0 \cf0  \{ R = 0, G = 255, B = 0 \}, 500, 4); \cf4 // 4x (2x500) ms\cf0 \
+    \}\
+    \cf4 // R\'e9veiller le mirroir de l'entr\'e9e et afficher le flux video de la camera\cf0 \
+    theMirror.DoorBellRing();\
+\}\
+\pard\pardeftab708\ri-52
+
+\f3\fs22 \cf0  \
+}

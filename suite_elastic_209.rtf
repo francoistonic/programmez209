@@ -1,0 +1,438 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 Consolas;
+\f3\fnil\fcharset0 Consolas-Bold;\f4\fnil\fcharset0 Consolas-Italic;}
+{\colortbl;\red255\green255\blue255;\red100\green100\blue100;\red127\green0\blue85;\red106\green62\blue62;
+\red42\green0\blue255;\red102\green102\blue102;\red85\green85\blue85;\red51\green51\blue51;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\b\fs22 \cf0 MBean interface : ThreadsMonitoringMXBean.java\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\b0 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\i \cf0 package threadmon.monitoring;\
+\
+import com.fasterxml.jackson.core.JsonProcessingException;\
+\
+/**\
+ * Interface du MBean pour recuperer les infos des threads \
+ * \
+ * @author armel.chever\
+ *\
+ */\
+public interface ThreadsMonitoringMXBean \{\
+\
+    /**\
+     * Retourne un json contenant les infos des threads de la JVM\
+     * @return  String un json contenant les infos des threads de la JVM\
+     */\
+    public String getThreadsStatus() throws JsonProcessingException;\
+    \
+\}\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\i0 \cf0 \
+\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\b \cf0 MBean impl\'e9mentation:  ThreadsMonitoring.java\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\b0 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\i \cf0 package threadmon.monitoring;\
+import java.lang.management.ManagementFactory;\
+import java.lang.management.ThreadInfo;\
+\
+import com.fasterxml.jackson.core.JsonProcessingException;\
+import com.fasterxml.jackson.databind.ObjectMapper;\
+import com.sun.management.ThreadMXBean;\
+\
+/**\
+ * Bean JMX permettant de requeter les infos des threads \
+ * \
+ * @author armel.chever\
+ *\
+ */\
+public class ThreadsMonitoring implements ThreadsMonitoringMXBean \{\
+	\
+    /**\
+     * @see simat.common.monitoring.ThreadsMonitoringMXBean#getThreadsStatus()\
+     */\
+    public String getThreadsStatus() throws JsonProcessingException \{\
+        \
+        ThreadMXBean threadMgmt = ((ThreadMXBean) ManagementFactory.getThreadMXBean());\
+        long[] threadsId = threadMgmt.getAllThreadIds();\
+        \
+        ThreadsStatus threadsStatus = new ThreadsStatus();\
+        \
+        for (long id : threadsId) \{\
+         \
+            ThreadInfo info = threadMgmt.getThreadInfo(id);\
+            \
+            if (info.getThreadName().contains("exec")) \{\
+	            ThreadState threadState = new ThreadState();\
+	            threadState.setThreadId(String.valueOf(info.getThreadId()));\
+	            threadState.setThreadName(info.getThreadName());\
+	            threadState.setThreadState(String.valueOf(info.getThreadState()));\
+	            threadState.setAllocatedBytes(threadMgmt.getThreadAllocatedBytes(id));\
+	            \
+	            threadsStatus.getThreadsStatus().add(threadState);\
+            \}            \
+        \}\
+        \
+      ObjectMapper mapper = new ObjectMapper();\
+      String status = mapper.writeValueAsString(threadsStatus);\
+      return status;\
+\
+    \}\
+\
+\}\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\i0 \cf0 \
+\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\b \cf0 POJO pour repr\'e9senter l\'92\'e9tat d\'92un thread : ThreadState.java\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\b0 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\i \cf0 package threadmon.monitoring;\
+/**\
+ * \
+ * Classe representant l'etat d'un Thread a un instant T\
+ * @author armel.chever\
+ *\
+ */\
+public class ThreadState \{\
+\
+    \
+    protected String threadId = "";\
+    protected String threadName = "";\
+    protected String threadState = "";\
+    protected long allocatedBytes = 0;\
+\
+    \
+    /**\
+     * Construction\
+     */\
+    public ThreadState() \{\
+        super();\
+    \}\
+    \
+    /**\
+     * @return the threadId\
+     */\
+    public String getThreadId() \{\
+        return threadId;\
+    \}\
+\
+    /**\
+     * @param threadId the threadId to set\
+     */\
+    public void setThreadId(String threadId) \{\
+        this.threadId = threadId;\
+    \}\
+\
+    /**\
+     * @return the threadName\
+     */\
+    public String getThreadName() \{\
+        return threadName;\
+    \}\
+\
+    /**\
+     * @param threadName the threadName to set\
+     */\
+    public void setThreadName(String threadName) \{\
+        this.threadName = threadName;\
+    \}\
+\
+    /**\
+     * @return the threadState\
+     */\
+    public String getThreadState() \{\
+        return threadState;\
+    \}\
+\
+    /**\
+     * @param threadState the threadState to set\
+     */\
+    public void setThreadState(String threadState) \{\
+        this.threadState = threadState;\
+    \}\
+\
+\
+    /**\
+     * @return the allocatedBytes\
+     */\
+    public long getAllocatedBytes() \{\
+        return allocatedBytes;\
+    \}\
+\
+\
+    /**\
+     * @param allocatedBytes the allocatedBytes to set\
+     */\
+    public void setAllocatedBytes(long allocatedBytes) \{\
+        this.allocatedBytes = allocatedBytes;\
+    \}\
+ \
+\}\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\i0 \cf0 \
+\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\b \cf0 POJO pour repr\'e9senter l\'92\'e9tat global d\'92un ensemble de threads : ThreadsStatus.java\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\b0 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\i \cf0 package threadmon.monitoring;\
+\
+import java.util.ArrayList;\
+import java.util.List;\
+\
+/**\
+ * @author armel.chever\
+ *\
+ */\
+public class ThreadsStatus \{\
+\
+	protected List<ThreadState> threadsStatus = new ArrayList<ThreadState>();\
+\
+	public List<ThreadState> getThreadsStatus() \{\
+		return threadsStatus;\
+	\}\
+\
+	public void setThreadsStatus(List<ThreadState> threadsStatus) \{\
+		this.threadsStatus = threadsStatus;\
+	\}\
+\}
+\f1\i0 \
+\
+\
+\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f2\fs20 \cf2 @Configuration\
+@EnableAutoConfiguration\
+@ComponentScan\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f3\b \cf3 public
+\f2\b0 \cf0  
+\f3\b \cf3 class
+\f2\b0 \cf0  Application \{\
+   	\
+
+\f3\b \cf3    public
+\f2\b0 \cf0  
+\f3\b \cf3 static
+\f2\b0 \cf0  
+\f3\b \cf3 void
+\f2\b0 \cf0  main(String[] \cf4 args\cf0 ) 
+\f3\b \cf3 throws
+\f2\b0 \cf0  Exception \{\
+          	\
+   	SpringApplication.
+\f4\i run
+\f2\i0 (Application.
+\f3\b \cf3 class
+\f2\b0 \cf0 , \cf4 args\cf0 );\
+          	\
+   	MBeanServer \cf4 mbs\cf0  = ManagementFactory.
+\f4\i getPlatformMBeanServer
+\f2\i0 ();\
+\pard\pardeftab720\ri-860\sl276\slmult1
+\cf0   	ObjectName \cf4 name\cf0  = 
+\f3\b \cf3 new
+\f2\b0 \cf0  ObjectName(
+\f3\b \cf5 "monitoring.threadmon.mbean:type=ThreadsMonitoring"
+\f2\b0 \cf0 );\
+\pard\pardeftab720\ri-340\sl276\slmult1
+\cf0   	ThreadsMonitoring \cf4 mbean\cf0  = 
+\f3\b \cf3 new
+\f2\b0 \cf0  ThreadsMonitoring();\
+  	\cf4 mbs\cf0 .registerMBean(\cf4 mbean\cf0 , \cf4 name\cf0 );\
+   	\
+   \}\
+ \
+\}\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0\fs22 \cf0  \
+\
+\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1 \cf6 \{
+\f2   \
+\pard\pardeftab720\ri-340\sl276\slmult1
+\cf7    
+\f3\b \cf8 "threadsStatus"
+\f2\b0 \cf6 :[  \
+\cf7       
+\f1 \cf6 \{
+\f2   \
+\cf7          
+\f3\b \cf8 "threadId"
+\f2\b0 \cf6 :\cf7 "32"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadName"
+\f2\b0 \cf6 :\cf7 "http-nio-8080-exec-3"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadState"
+\f2\b0 \cf6 :\cf7 "WAITING"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "allocatedBytes"
+\f2\b0 \cf6 :\cf7 118680\
+      
+\f1 \cf6 \},\
+
+\f2 \cf7       
+\f1 \cf6 \{
+\f2   \
+\cf7          
+\f3\b \cf8 "threadId"
+\f2\b0 \cf6 :\cf7 "31"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadName"
+\f2\b0 \cf6 :\cf7 "http-nio-8080-exec-2"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadState"
+\f2\b0 \cf6 :\cf7 "WAITING"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "allocatedBytes"
+\f2\b0 \cf6 :\cf7 123496\
+      
+\f1 \cf6 \},\
+
+\f2 \cf7       
+\f1 \cf6 \{
+\f2   \
+\cf7          
+\f3\b \cf8 "threadId"
+\f2\b0 \cf6 :\cf7 "30"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadName"
+\f2\b0 \cf6 :\cf7 "http-nio-8080-exec-1"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "threadState"
+\f2\b0 \cf6 :\cf7 "WAITING"
+\f1 \cf6 ,\
+
+\f2 \cf7          
+\f3\b \cf8 "allocatedBytes"
+\f2\b0 \cf6 :\cf7 7063928\
+      
+\f1 \cf6 \}\
+
+\f2 \cf7    \cf6 ]\
+\}\
+ \
+\pard\pardeftab720\ri-340\sl276\slmult1\sb280\sa80
+
+\f1\b\fs26 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\fs22 \cf0 \
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0 \cf0 01-input-jmx-thread.conf :\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\b0 \cf0 input \{\
+   jmx \{\
+     path => "D:\\projects\\Lab\\elastic\\logstash-2.3.4\\conf\\jmxsources"\
+     polling_frequency => 5\
+     type => "thread"\
+     nb_thread => 4\
+   \}\
+\}\
+ \
+Puis dans le r\'e9pertoire \'ab D:\\projects\\Lab\\elastic\\logstash-2.3.4\\conf\\jmxsources \'bb :\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\b \cf0 jmx_sources.conf :\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f1\b0 \cf0 \{\
+\pard\pardeftab720\ri-340\sl276\slmult1
+
+\f0 \cf0   "host" : "localhost",\
+  "port" : 11000,\
+  "queries" : [\
+	\{\
+  	"object_name" : "monitoring.threadmon.mbean:type=ThreadsMonitoring",\
+  	"attributes" : [ "ThreadsStatus"],\
+  	"object_alias" : "Threads"\
+	\}\
+   ]\
+\}\
+ \
+ \
+\
+ \
+filter \{\
+ \
+	if [type] == "thread" \{\
+ \
+\pard\pardeftab720\fi720\ri-340\sl276\slmult1
+\cf0            	# Recuperation du json\
+\pard\pardeftab720\ri-340\sl276\slmult1
+\cf0            		json \{\
+                       		source => "metric_value_string"\
+                       		target => "jsondata"\
+           	\}\
+  \
+           		# Eclatement du flux JSON evenements (1 evenement par thread)\
+           		split \{\
+                       		field => "[jsondata][threadsStatus]"\
+           		\}\
+ \
+           		# Renommage des champs pour la lisibilte\
+           		mutate \{\
+                       		rename => \{ "[jsondata][threadsStatus][threadId]" => "thread_id" \}\
+                       		rename => \{ "[jsondata][threadsStatus][threadName]" => "thread_name" \}\
+                       		rename => \{ "[jsondata][threadsStatus][threadState]" => "thread_state" \}\
+                       		rename => \{ "[jsondata][threadsStatus][allocatedBytes]" => "allocated_bytes" \}\
+           		\}\
+           	\
+           		# Conversion de la memoire en integer\
+           		mutate \{\
+                       		convert => \{ "allocated_bytes" => "integer" \}    	\
+           		\}\
+\pard\pardeftab720\fi720\ri-340\sl276\slmult1
+
+\f1 \cf0 \}\
+\pard\pardeftab720\ri-340\sl276\slmult1
+\cf0 \}\
+\
+}

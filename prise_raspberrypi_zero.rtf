@@ -1,0 +1,291 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green32\blue96;\red192\green0\blue0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab708
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+
+\f0\fs22 \cf2 var sensor = mcpadc.open(channel, \{speedHz: 20000\}, function (err) \{\
+  if (err) throw err;\
+\
+  // Measurement interval\
+  setInterval(function () \{\
+\
+    // Read\
+    sensor.read(function (err, reading) \{\
+      if (err) throw err;\
+\
+      // Calculate current\
+      var measuredVoltage = reading.value * 3.3;\
+      var measuredCurrent = (measuredVoltage/resistance) * 2000 /1.41;\
+\
+      // Calculate power\
+      var power = voltage * measuredCurrent;\
+\
+      // Assign to aREST\
+      piREST.variable('power', power.toFixed(2));\
+      piREST.variable('current', measuredCurrent.toFixed(2));\
+\
+      // Log output\
+      console.log("Measured current: " + measuredCurrent.toFixed(2) + 'A');\
+      console.log("Measured power: " + power.toFixed(2) + 'W');\
+\
+    \});\
+  \}, \cf3 500\cf2 );\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 \
+app.get('/on', function (req, res) \{\
+\
+  piREST.digitalWrite(outputPin, 1);\
+\
+  // Answer\
+  answer = \{\
+    status: 1\
+  \};\
+  res.json(answer);\
+\
+\});\
+\
+app.get('/off', function (req, res) \{\
+\
+  piREST.digitalWrite(outputPin, 0);\
+\
+  // Answer\
+  answer = \{\
+    status: 0\
+  \};\
+  res.json(answer);\
+\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 \
+var sensor = mcpadc.open(channel, \{speedHz: 20000\}, function (err) \{\
+  if (err) throw err;\
+\
+  // Measurement interval\
+  setInterval(function () \{\
+\
+    // Read\
+    sensor.read(function (err, reading) \{\
+      if (err) throw err;\
+\
+      // Calculate current\
+      var measuredVoltage = reading.value * 3.3;\
+      var measuredCurrent = (measuredVoltage/resistance) * 2000 /1.41;\
+\
+      // Calculate power\
+      var power = voltage * measuredCurrent;\
+\
+      // Assign to aREST\
+      piREST.variable('power', power.toFixed(2));\
+      piREST.variable('current', measuredCurrent.toFixed(2));\
+\
+      // Log output\
+      console.log("Measured current: " + measuredCurrent.toFixed(2) + 'A');\
+      console.log("Measured power: " + power.toFixed(2) + 'W');\
+\
+    \});\
+  \}, 500);\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf0 \
+\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 <!DOCTYPE html>\
+<html>\
+\
+<head>\
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>\
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">\
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>\
+  <script src="js/script.js"></script>\
+  <link rel="stylesheet" href="css/style.css">\
+  <meta name="viewport" content="width=device-width, initial-scale=1">\
+</head>\
+\
+<body>\
+\
+<div id="container">\
+\
+  <h3>Energy Meter</h3>\
+\
+  <div class='row'>\
+\
+    <div class='col-md-4'></div>\
+    <div class='col-md-2'>\
+      <button id='on' class='btn btn-block btn-primary'>On</button>\
+    </div>\
+    <div class='col-md-2'>\
+      <button id='off' class='btn btn-block btn-warning'>Off</button>\
+    </div>\
+    <div class='col-md-4'></div>\
+\
+  </div>\
+\
+  <div class='row'>\
+\
+    <div class='col-md-4'></div>\
+    <div class='col-md-4'>\
+      Current consumption: <span id='current'></span> A\
+    </div>\
+    <div class='col-md-4'></div>\
+\
+  </div>\
+\
+  <div class='row'>\
+\
+    <div class='col-md-4'></div>\
+    <div class='col-md-4'>\
+      Power consumption: <span id='power'></span> W\
+    </div>\
+    <div class='col-md-4'></div>\
+\
+  </div>\
+\
+</div>\
+\
+</body>\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 </html>\cf0 \
+\pard\pardeftab708\ri-340\sl259\slmult1\sa160
+\cf0 Fichier CSS \'91style.css\'92 \'e0 mettre dans le dossier \'91public\\css\'92\'a0:\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 h3 \{\
+  text-align: center;\
+\}\
+\
+body \{\
+  font-size: 20px;\
+\}\
+\
+text-center \{\
+  text-align: center;\
+\}\
+\
+.row \{\
+  margin-bottom: 10px;\
+  margin-top: 10px;\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \}\
+\pard\pardeftab708\ri-340\sl259\slmult1\sa160
+\cf0 Fichier JS \'91script.js\'92 \'e0 mettre dans le dossier \'91public\\js\'92\'a0:\
+\pard\pardeftab708\li706\ri-340\sl259\slmult1
+\cf2 $( document ).ready(function() \{\
+\
+  // Buttons\
+  $( "#on" ).click(function() \{\
+\
+    // Set lamp ON\
+    $.get('/on');\
+\
+  \});\
+\
+  $( "#off" ).click(function() \{\
+\
+    // Set lamp OFF\
+    $.get('/off');\
+\
+  \});\
+\
+  // Indicators\
+  setInterval(function () \{\
+\
+    // Current\
+    $.get('/current', function(data) \{\
+      $( "#current" ).text(data.current);\
+    \});\
+\
+    // Power\
+    $.get('/power', function(data) \{\
+      $( "#power" ).text(data.power);\
+    \});\
+\
+  \}, 1000);\
+\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\ri-340\sl259\slmult1\sa160
+\cf0 \
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 app.get('/', function (req, res) \{\
+  res.sendfile(__dirname + '/public/interface.html');\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 app.get('/on', function (req, res) \{\
+\
+  piREST.digitalWrite(outputPin, 1);\
+\
+  // Answer\
+  answer = \{\
+    status: 1\
+  \};\
+  res.json(answer);\
+\
+\});\
+\
+app.get('/off', function (req, res) \{\
+\
+  piREST.digitalWrite(outputPin, 0);\
+\
+  // Answer\
+  answer = \{\
+    status: 0\
+  \};\
+  res.json(answer);\
+\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf0 \
+\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1
+\cf2 var sensor = mcpadc.open(channel, \{speedHz: 20000\}, function (err) \{\
+  if (err) throw err;\
+\
+  // Measurement interval\
+  setInterval(function () \{\
+\
+    // Read\
+    sensor.read(function (err, reading) \{\
+      if (err) throw err;\
+\
+      // Calculate current\
+      var measuredVoltage = reading.value * 3.3;\
+      var measuredCurrent = (measuredVoltage/resistance) * 2000 /1.41;\
+\
+      // Calculate power\
+      var power = voltage * measuredCurrent;\
+\
+      // Assign to aREST\
+      piREST.variable('power', power.toFixed(2));\
+      piREST.variable('current', measuredCurrent.toFixed(2));\
+\
+      // Log\
+      var data = \{\
+                current: measuredCurrent.toFixed(2),\
+                power: power.toFixed(2),\
+                date: new Date()\
+            \};\
+      db.insert(data, function (err, newDoc) \{\
+          console.log(newDoc);\
+      \});\
+\
+      // Log output\
+      console.log("Measured current: " + measuredCurrent.toFixed(2) + 'A');\
+      console.log("Measured power: " + power.toFixed(2) + 'W');\
+\
+    \});\
+  \}, 500);\
+\pard\pardeftab708\li708\ri-340\sl259\slmult1\sa160
+\cf2 \});\
+\pard\pardeftab708\ri-340\sl259\slmult1\sa160
+\cf0 \
+\
+}

@@ -1,0 +1,289 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fnil\fcharset0 Calibri;}
+{\colortbl;\red255\green255\blue255;\red255\green0\blue0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab708
+\pard\pardeftab708\ri-52\sl259\slmult1
+
+\f0\fs22 \cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2 int sensorPin = A0;           \
+int sensorValue = 0;                     \
+int values[10];                           \
+int k=0;                                 \
+int resistivite=0;                        \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1\qj
+\cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2 sensorValue = analogRead(sensorPin);    \
+  for (k=0;k<10; k++)\{                    \
+    values[k]      = values[k+1]; \}       \
+    values[9]      = sensorValue;        \
+    resistivite = 0;                      \
+  \
+for (k=0; k<10; k++) \{                  \
+\pard\pardeftab708\li709\ri-52\sl259\slmult1
+\cf2 resistivite = resistivite + values [k]; \}  \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2  \
+ Serial.println(resistivite);            \
+\
+\pard\pardeftab708\li360\ri-52\sl259\slmult1
+
+\b \cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1
+
+\b0 \cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2 if (resistivite < 5000)\{   \
+     digitalWrite(ledPin, HIGH);          \
+     \}\
+\
+  if (resistivite < 5000)\{               \
+     monservo.write(90);                 \
+     delay(500);                          \
+     monservo.write(0);                   \
+     \}\
+\
+  else\{                                   \
+\pard\pardeftab708\li426\fi282\ri-52\sl259\slmult1
+\cf2 digitalWrite(ledPin, LOW);           \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2      \}\
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2 int sensorPin_Rouge = A0;                 \
+int sensorValue_Rouge = 0;                \
+int values_Rouge[10];                     \
+int k=0;                                  \
+int resistivite_Rouge=0;                 \
+\
+int sensorPin_Verte = A1;                 \
+int sensorValue_Verte = 0;               \
+int values_Verte[10];                     \
+int l=0;                                  \
+int resistivite_Verte=0;                  \
+\
+int sensorPin_Bleue = A2;                 \
+int sensorValue_Bleue = 0;              \
+int values_Bleue[10];                     \
+int m=0;                                  \
+\
+int resistivite_Bleue=0;                 \
+int sensorPin_Jaune = A3;                \
+int sensorValue_Jaune = 0;                \
+int values_Jaune[10];                     \
+int n=0;                                  \
+int resistivite_Jaune=0;                  \
+\
+int sensorPin_Orange = A4;                \
+int sensorValue_Orange = 0;               \
+int values_Orange[10];                    \
+int o=0;                                  \
+int resistivite_Orange=0;                 \
+\
+int sensorPin_Blanche = A5;               \
+int sensorValue_Blanche = 0;              \
+int values_Blanche[10];                   \
+int p=0;                                  \
+int resistivite_Blanche=0;                \
+\
+\pard\pardeftab708\li426\ri-52\sl259\slmult1\qj
+\cf2 \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf2 int ledPin_Rouge = 13;                   \
+int ledPin_Verte = 12;                    \
+int ledPin_Bleue = 11;                    \
+int ledPin_Jaune = 10;                    \
+int ledPin_Orange = 9;                    \
+int ledPin_Blanche = 8;\cf0                    \
+\
+\cf2 pinMode(ledPin_Rouge, OUTPUT);          \
+  pinMode(ledPin_Verte, OUTPUT);          \
+  pinMode(ledPin_Bleue, OUTPUT);          \
+  pinMode(ledPin_Jaune, OUTPUT);          \
+  pinMode(ledPin_Orange, OUTPUT);         \
+  pinMode(ledPin_Blanche, OUTPUT);  \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf0 \
+\
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2 sensorValue_Rouge = analogRead(sensorPin_Rouge);  \
+  for (k=0;k<10; k++)\{                    \
+    values_Rouge[k] = values_Rouge[k+1]; \} \
+    values_Rouge[9] = sensorValue_Rouge;  \
+    resistivite_Rouge = 0;                \
+  for (k=0; k<10; k++) \{               \
+    resistivite_Rouge = resistivite_Rouge + values_Rouge [k]; \}  \
+    Serial.println(resistivite_Rouge);   \
+  delay(1500);\
+  \
+ sensorValue_Verte = analogRead(sensorPin_Verte);  \
+  for (l=0;l<10; l++)\{                    \
+    values_Verte[l] = values_Verte[l+1]; \} \
+    values_Verte[9] = sensorValue_Verte;  \
+    resistivite_Verte = 0;                \
+  for (l=0; l<10; l++) \{                  \
+    resistivite_Verte = resistivite_Verte + values_Verte [l]; \}  \
+    Serial.println(resistivite_Verte);   \
+  delay(1500);\
+  \
+  sensorValue_Bleue = analogRead(sensorPin_Bleue);  \
+  for (m=0;m<10; m++)\{                    \
+    values_Bleue[m] = values_Bleue[m+1]; \} \
+    values_Bleue[9] = sensorValue_Bleue;  \
+    resistivite_Bleue = 0;                \
+  for (m=0; m<10; m++) \{                  \
+    resistivite_Bleue = resistivite_Bleue + values_Bleue [l]; \}    \
+  Serial.println(resistivite_Bleue);   \
+  delay(1500);\
+  \
+    sensorValue_Jaune = analogRead(sensorPin_Jaune);  \
+  for (n=0;n<10; n++)\{                    \
+    values_Jaune[n] = values_Jaune[n+1]; \} \
+    values_Jaune[9] = sensorValue_Jaune;  \
+    resistivite_Jaune = 0;                \
+  for (n=0; n<10; n++) \{                  \
+    resistivite_Jaune = resistivite_Jaune + values_Jaune [l]; \}    \
+  Serial.println(resistivite_Jaune);   \
+  delay(1500);\
+  \
+  sensorValue_Orange = analogRead(sensorPin_Orange); \
+  for (o=0;o<10; o++)\{                    \
+    values_Orange[o] = values_Orange[o+1]; \} \
+    values_Orange[9] = sensorValue_Orange;  \
+    resistivite_Orange = 0;                \
+  for (o=0; o<10; o++) \{                  \
+    resistivite_Orange = resistivite_Orange + values_Orange [l]; \}    \
+  Serial.println(resistivite_Orange);   \
+  delay(1500);\
+  \
+  sensorValue_Blanche = analogRead(sensorPin_Blanche);  \
+  for (p=0;p<10; p++)\{                    \
+    values_Blanche[p] = values_Blanche[p+1]; \} \
+    values_Blanche[9] = sensorValue_Blanche;  \
+    resistivite_Blanche = 0;                \
+  for (p=0; p<10; p++) \{                  \
+    resistivite_Blanche = resistivite_Blanche + values_Blanche [l]; \}    \
+  Serial.println(resistivite_Blanche);   \
+  delay(1500);\
+            \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf0 \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2   if (resistivite_Rouge < 5000)\{         \
+     digitalWrite(ledPin_Rouge, HIGH);\}  \
+  else\{                                  \
+     digitalWrite(ledPin_Rouge, LOW);\}  \
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf2                                                    \
+\pard\pardeftab708\li426\ri-52\sl259\slmult1
+\cf2   if (resistivite_Verte < 5000)\{         \
+     digitalWrite(ledPin_Verte, HIGH);\}  \
+ else\{                                  \
+     digitalWrite(ledPin_Verte, LOW);\}   \
+\
+ if (resistivite_Bleue < 5000)\{        \
+     digitalWrite(ledPin_Bleue, HIGH);\}      \
+  else\{                                  \
+     digitalWrite(ledPin_Bleue, LOW);\}   \
+\
+  if (resistivite_Jaune < 5000)\{         \
+     digitalWrite(ledPin_Jaune, HIGH);\}      \
+  else\{                                  \
+     digitalWrite(ledPin_Jaune, LOW);\}   \
+\
+ if (resistivite_Orange < 5000)\{         \
+     digitalWrite(ledPin_Orange, HIGH);\}      \
+  else\{                                   \
+     digitalWrite(ledPin_Orange, LOW);\}   \
+\
+if (resistivite_Blanche < 5000)\{         \
+     digitalWrite(ledPin_Blanche, HIGH);\}      \
+  else\{                                    \
+     digitalWrite(ledPin_Blanche, LOW);\}  \
+\
+\pard\pardeftab708\ri-52\sl259\slmult1
+\cf2 \
+if (resistivite_Rouge < 5000)\{ \
+    Keyboard.press(218);                  // fleche du haut\
+    Keyboard.releaseAll();              \
+ \}\
+\
+  if (resistivite_Verte < 5000)\{ \
+     Keyboard.press(217);                 // fl\'e8che du bas\
+     Keyboard.releaseAll();               \
+ \}\
+\
+  if (resistivite_Bleue < 5000)\{ \
+    Keyboard.press(216);                   // fleche de gauche\
+    Keyboard.releaseAll();               \
+ \}\
+\
+  if (resistivite_Jaune < 5000)\{ \
+    Keyboard.press(215);                  // fl\'e8che de droite\
+    Keyboard.releaseAll();               \
+ \}\
+\
+  if (resistivite_Orange < 5000)\{ \
+    Keyboard.press(178);                // barre espace   \
+    Keyboard.releaseAll();               \
+ \}\
+\
+  if (resistivite_Blanche < 5000)\{ \
+    Mouse.click();                  	 // clique gauche de la souris\
+    Mouse.release();            \
+ \}\
+\
+\}\
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+
+\b \cf0 \
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+\cf2 128 pour Ctrl gauche\
+129 pour Shift gauche\
+130 pour Alt gauche\
+131 pour Touche Windows\
+132 pour Ctrl droit\
+133 pour Shift droit\
+134 pour Alt droit\
+135 pour Touche menu\
+218 pour fl\'e8che haut\
+217 pour fl\'e8che bas\
+216 pour fl\'e8che gauche\
+215 pour fl\'e8che droite\
+178 pour barre espace\
+179 pour Tab\
+176 pour Retour\
+177 pour Echappe\
+209 pour Insert\
+212 pour Supprime\
+211 pour Page up\
+214 pour Page down\
+210 pour Retour \'e0 la ligne\
+213 pour Fin\
+193 pour Verrouillage\
+194 pour F1\
+195 pour F2\
+196 pour F3\
+197 pour F4\
+198 pour F5\
+199 pour F6\
+200 pour F7\
+201 pour F8\
+202 pour F9\
+203 pour F10\
+204 pour F11\
+205 pour F12\
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+\cf0 \
+}

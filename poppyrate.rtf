@@ -1,0 +1,209 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fnil\fcharset0 Calibri;}
+{\colortbl;\red255\green255\blue255;\red34\green34\blue34;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab708
+\pard\pardeftab708\ri-52\sl259\slmult1\sa160
+
+\f0\fs14 \cf2 import httplib, urllib, base64\uc0\u8232 \u8232 headers = \{\u8232 \'a0\'a0\'a0 # Request headers.\u8232 \'a0\'a0\'a0 'Content-Type': 'application/json',\u8232 \u8232 \'a0\'a0\'a0 # Mettez Ici la clef  d\'92api r\'e9cup\'e9r\'e9 \u8232 \'a0\'a0\'a0 'Ocp-Apim-Subscription-Key': ######',\u8232 \}\u8232 \
+\
+\uc0\u8232 # Mettez ici l'url vers la photo que vous avez prise avec la cam\'e9ra\u8232 body = "\{'url':'...'\}\
+#Pensez \'e0 mettre le point d\'92api correspondant \'e0 la clef d\'92API pour laquelle vous vous etes enregistr\'e9\uc0\u8232 \u8232 try:\u8232 \'a0\'a0\'a0 conn = httplib.HTTPSConnection('westeurope.api.cognitive.microsoft.com\'92) \u8232 \'a0\'a0\'a0 conn.request("POST", "/vision/v1.0/analyze?%s" % params, body, headers)\u8232 \'a0\'a0\'a0 response = conn.getresponse()\u8232 \'a0\'a0\'a0 data = response.read()\u8232 \'a0\'a0\'a0 print(data)\u8232 \'a0\'a0\'a0 conn.close()\u8232 except Exception as e: \u8232 \'a0\'a0\'a0 print("[Errno \{0\}] \{1\}".format(e.errno, e.strerror))\u8232 
+\f1\fs22 \cf0 \
+\
+\{\
+  "categories": [\
+    \{\
+      "name": "abstract_",\
+      "score": 0.00390625\
+    \},\
+    \{\
+      "name": "people_",\
+      "score": 0.83984375,\
+      "detail": \{\
+        "celebrities": [\
+          \{\
+            "name": "Satya Nadella",\
+            "faceRectangle": \{\
+              "left": 597,\
+              "top": 162,\
+              "width": 248,\
+              "height": 248\
+            \},\
+            "confidence": 0.999028444\
+          \}\
+        ]\
+      \}\
+    \}\
+  ],\
+  "adult": \{\
+    "isAdultContent": false,\
+    "isRacyContent": false,\
+    "adultScore": 0.0934349000453949,\
+    "racyScore": 0.068613491952419281\
+  \},\
+    "tags": [\
+    \{\
+      "name": "person",\
+      "confidence": 0.98979085683822632\
+    \},\
+    \{\
+      "name": "man",\
+      "confidence": 0.94493889808654785\
+    \},\
+    \{\
+      "name": "outdoor",\
+      "confidence": 0.938492476940155\
+    \},\
+    \{\
+      "name": "window",\
+      "confidence": 0.89513939619064331\
+    \}\
+  ],\
+  "description": \{\
+    "tags": [\
+      "person",\
+      "man",\
+      "outdoor",\
+      "window",\
+      "glasses"\
+    ],\
+    "captions": [\
+      \{\
+        "text": "Satya Nadella sitting on a bench",\
+        "confidence": 0.48293603002174407\
+      \}\
+    ]\
+  \},\
+  "requestId": "0dbec5ad-a3d3-4f7e-96b4-dfd57efe967d",\
+    "metadata": \{\
+    "width": 1500,\
+    "height": 1000,\
+    "format": "Jpeg"\
+  \},\
+  "faces": [\
+    \{\
+      "age": 44,\
+      "gender": "Male",\
+      "faceRectangle": \{\
+        "left": 593,\
+        "top": 160,\
+        "width": 250,\
+        "height": 250\
+      \}\
+    \}\
+  ],\
+  "color": \{\
+    "dominantColorForeground": "Brown",\
+    "dominantColorBackground": "Brown",\
+    "dominantColors": [\
+      "Brown",\
+      "Black"\
+    ],\
+    "accentColor": "873B59",\
+    "isBWImg": false\
+  \},\
+  "imageType": \{\
+    "clipArtType": 0,\
+    "lineDrawingType": 0\
+  \}\
+\}\
+\
+\
+\uc0\u8232 import httplib, urllib, base64\
+\
+headers = \{\
+    # Request headers.\
+    'Content-Type': 'application/json',\
+\
+    
+\f0\fs14 \cf2 \'a0\'a0 # Mettez Ici la clef  d\'92api r\'e9cup\'e9r\'e9 \uc0\u8232 
+\f1\fs22 \cf0     'Ocp-Apim-Subscription-Key': '13hc77781f7e4b19b5fcdd72a8df7156',\
+\}\
+\
+params = urllib.urlencode(\{\
+    # Vous allez mettre ici des param\'e8tres correspondant \'e0 la langue ou \'e0 l\'92orientation en mettant unk il d\'e9tectera automatiquement la lanque de l\'92utilisateur ainsi que l\'92orientation de la photo avec detectorientation \'e0 true\
+    'language': 'unk',\
+    'detectOrientation ': 'true',\
+\})\
+\
+# Ici mettez l\'92url vers la photo prise\
+body = "\{'url':'...'\}"\
+\
+try:\
+#Pensez \'e0 mettre le point d\'92api correspondant \'e0 la clef d\'92API pour laquelle vous vous etes enregistr\'e9\
+    conn = httplib.HTTPSConnection('westeurope.api.cognitive.microsoft.com')\
+    conn.request("POST", "/vision/v1.0/ocr?%s" % params, body, headers)\
+    response = conn.getresponse()\
+    data = response.read()\
+    print(data)\
+    conn.close()\
+except Exception as e:\
+    print("[Errno \{0\}] \{1\}".format(e.errno, e.strerror))\'a0\'a0\
+\
+De la m\'eame fa\'e7on vous allez r\'e9cuperer un json correspondant\'a0:\
+\{\
+  "language": "en",\
+  "textAngle": -2.0000000000000338,\
+  "orientation": "Up",\
+  "regions": [\
+    \{\
+      "boundingBox": "462,379,497,258",\
+      "lines": [\
+        \{\
+          "boundingBox": "462,379,497,74",\
+          "words": [\
+            \{\
+              "boundingBox": "462,379,41,73",\
+              "text": "A"\
+            \},\
+            \{\
+              "boundingBox": "523,379,153,73",\
+              "text": "GOAL"\
+            \},\
+            \{\
+              "boundingBox": "694,379,265,74",\
+              "text": "WITHOUT"\
+            \}\
+          ]\
+        \},\
+        \{\
+          "boundingBox": "565,471,289,74",\
+          "words": [\
+            \{\
+              "boundingBox": "565,471,41,73",\
+              "text": "A"\
+            \},\
+            \{\
+              "boundingBox": "626,471,150,73",\
+              "text": "PLAN"\
+            \},\
+            \{\
+              "boundingBox": "801,472,53,73",\
+              "text": "IS"\
+            \}\
+          ]\
+        \},\
+        \{\
+          "boundingBox": "519,563,375,74",\
+          "words": [\
+            \{\
+              "boundingBox": "519,563,149,74",\
+              "text": "JUST"\
+            \},\
+            \{\
+              "boundingBox": "683,564,41,72",\
+              "text": "A"\
+            \},\
+            \{\
+              "boundingBox": "741,564,153,73",\
+              "text": "WISH"\
+            \}\
+          ]\
+        \}\
+      ]\
+    \}\
+  ]\
+\}\
+\
+}
