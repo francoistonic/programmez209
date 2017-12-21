@@ -1,0 +1,195 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fnil\fcharset0 Calibri;\f1\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab708
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f0\i\fs24 \cf0 public class AdBlocker \{\
+    private static final String AD_HOSTS_FILE = "ads_website.txt";\
+    private static final Set<String> AD_HOSTS = new HashSet<>();\
+	\
+    public static void init(final Context context) \{\
+        new AsyncTask<Void, Void, Void>() \{\
+            @Override\
+            protected Void doInBackground(Void... params) \{\
+                try \{\
+                    loadFromAssets(context);\
+                \} catch (IOException e) \{\
+                    // \'85
+\f1 \
+
+\f0                 \}\
+                return null;\
+            \}\
+        \}.execute();\
+    \}\
+\
+    private static void loadFromAssets(Context context) throws IOException \{\
+        InputStream stream = context.getAssets().open(AD_HOSTS_FILE);\
+        BufferedSource buffer = Okio.buffer(Okio.source(stream));\
+        String line;\
+\
+        while ((line = buffer.readUtf8Line()) != null) \{\
+            AD_HOSTS.add(line);\
+        \}\
+\
+        buffer.close();\
+        stream.close();\
+    \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\f1\i0 \cf0 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1
+\cf0 \
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f0\i \cf0 <?xml version="1.0" encoding="utf-8"?>\
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"\
+    package="com.ssaurel.adblocker">\
+\
+    <uses-permission android:name="android.permission.INTERNET" />\
+\
+    <application\
+        android:allowBackup="true"\
+        android:icon="@mipmap/ic_launcher"\
+        android:label="@string/app_name"\
+        android:roundIcon="@mipmap/ic_launcher_round"\
+        android:supportsRtl="true"\
+        android:theme="@style/AppTheme"\
+        android:name=".MyApplication">\
+        <activity android:name=".MainActivity">\
+            <intent-filter>\
+                <action android:name="android.intent.action.MAIN" />
+\f1 \
+
+\f0                 <category android:name="android.intent.category.LAUNCHER" />\
+            </intent-filter>\
+        </activity>\
+    </application>
+\f1 \
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\f0\i0 \cf0 </manifest>
+\f1 \
+\pard\pardeftab708\ri-52\sl276\slmult1
+\cf0 \
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f0\i \cf0 package com.ssaurel.adblocker;\
+\
+import android.app.Application;\
+\
+public class MyApplication extends Application \{\
+    @Override\
+    public void onCreate() \{\
+        super.onCreate();\
+        AdBlocker.init(this);\
+    
+\f1 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200
+\cf0 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\i0\b \cf0 \
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\b0 \cf0 \
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f0\i \cf0 <?xml version="1.0" encoding="utf-8"?>\
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"\
+    android:layout_width="match_parent"\
+    android:layout_height="match_parent"\
+    tools:context="com.ssaurel.adblocker.MainActivity">\
+\
+    <WebView\
+        android:id="@+id/webView"\
+        android:layout_width="match_parent"\
+        android:layout_height="match_parent"/>\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+\cf0 </RelativeLayout>\
+\pard\pardeftab708\ri-52\sl276\slmult1\qj
+
+\f1\i0 \cf0 \
+\
+\pard\pardeftab708\ri-52\sl276\slmult1\qj
+
+\f0\i \cf0 package com.ssaurel.adblocker;\
+\
+import android.support.v7.app.AppCompatActivity;\
+import android.webkit.WebViewClient;\
+\
+public class MainActivity extends AppCompatActivity \{\
+\
+    private WebView webView;\
+\
+    @Override\
+    protected void onCreate(Bundle savedInstanceState) \{\
+        super.onCreate(savedInstanceState);\
+        setContentView(R.layout.activity_main);\
+        webView = (WebView) findViewById(R.id.webView);\
+        webView.setWebViewClient(new WebViewClient());\
+        webView.getSettings().setJavaScriptEnabled(true);\
+        webView.loadUrl("https://www.ssaurel.com/blog");\
+    
+\f1 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+\cf0 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\i0 \cf0 \
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\f0\i\fs22 \cf0 webView.setWebViewClient(new WebViewClient() \{\
+\pard\pardeftab708\ri-52\sl276\slmult1\qj
+\cf0   private Map<String, Boolean> loadedUrls = new HashMap<>();\
+\
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB)\
+  @Override\
+  public WebResourceResponse shouldInterceptRequest(WebView view, String url) \{\
+    boolean ad = false;\
+\
+	if (!loadedUrls.containsKey(url)) \{\
+	  ad = AdBlocker.isAd(url);\
+	  loadedUrls.put(url, ad);\
+	\} else \{\
+	  ad = loadedUrls.get(url);\
+	\}\
+\
+	if (ad) \{\
+	  Log.i("MyAdBlocker", "Blocked Url Ad = " + url);\
+	\}\
+\
+	return ad ? AdBlocker.createEmptyResource() :\
+			super.shouldInterceptRequest(view, url);\
+  
+\f1 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+\cf0 \}
+\f0 );\
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f1\i0 \cf0 \
+\
+\pard\pardeftab708\ri-52\sl276\slmult1
+
+\f0\i \cf0 public static boolean isAd(String url) \{\
+   HttpUrl httpUrl = HttpUrl.parse(url);\
+   return isAdHost(httpUrl != null ? httpUrl.host() : "");\
+\}\
+\
+private static boolean isAdHost(String host) \{\
+   if (TextUtils.isEmpty(host)) \{\
+      return false;\
+   \}\
+\
+   int index = host.indexOf(".");\
+   return index >= 0 && (AD_HOSTS.contains(host) ||\
+	index + 1 < host.length() && isAdHost(host.substring(index + 1)));\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200\qj
+
+\f1 \cf0 \}\
+\pard\pardeftab708\ri-52\sl276\slmult1\sa200
+\cf0 \
+}
